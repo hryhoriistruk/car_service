@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Shifts{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="schedule"><h2>Shifts</h2></div>
+        <div class="schedule">
+            {% for day, slots in shifts.items() %}
+                <div class="day">
+                    <h3>{{ day.strftime('%d %b %Y') }} / {{ day.strftime('%A') }}</h3>
+                    <div class="timeline">
+                        {% for hour in range(6, 24) %}
+                            <div class="hour">{{ hour }}:00</div>
+                        {% endfor %}
+                        <div class="hour" style="border-right: 0">24:00</div>
+                    </div>
+                    <div class="shifts">
+                        {% for slot in slots %}
+                            <div class="shift" data-shift-id="{{ slot.id }}" onmouseover="showButtons(this)"
+                                 onmouseout="hideButtons(this)"
+                                 style="margin-left: {{ (slot.time_start.hour - 6) * (100 / 19) }}%;
+                                         width: {{ ((slot.time_end.hour - slot.time_start.hour) * 60 + (slot.time_end.minute - slot.time_start.minute)) * (100 / 1140) }}%;">
+                                <div id="working-hours-{{ slot.id }}">
+                                    <strong>Working Hours:</strong> {{ slot.time_start.strftime('%H:%M') }}
+                                    - {{ slot.time_end.strftime('%H:%M') }}
+                                    <br><strong>Master:</strong> {{ slot.master }}
+                                </div>
+                                <div class="shift-buttons">
+                                    <button class="edit-button" onclick="editShift({{ slot.id }})"><i
+                                            class="material-icons edit-icon">edit</i></button>
+                                    <button class="delete-button" onclick="deleteShift({{ slot.id }})"><i
+                                            class="material-icons delete-icon">delete</i></button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Edit Shift</h2>
+            <form id="editForm">
+                <!-- Add fields for editing shift details here -->
+                <label for="startTime">Start Time:</label>
+                <input type="text" id="startTime" name="startTime" required>
+                <label for="endTime">End Time:</label>
+                <input type="text" id="endTime" name="endTime" required>
+                <!-- Add more fields as needed -->
+                <button type="button" onclick="applyEdit()">Apply</button>
+                <button type="button" onclick="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', path='script.js') }}" defer></script>
+{% endblock %}
