@@ -73,6 +73,3 @@ alembic upgrade head
 Configure the application by updating the settings in .env. Make sure to set up your database connection and other
 relevant options.
 
-### License
-
-This project is licensed under the MIT License.
